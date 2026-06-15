@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Motivation Hub</title>
+    <style>
+      :root {
+        --bg: #07111f;
+        --panel: rgba(10, 22, 38, 0.78);
+        --text: #eff7ff;
+        --accent: #7c5cff;
+        --accent-2: #17d8c2;
+        --soft: #c8dbff;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top, rgba(124, 92, 255, 0.18), transparent 22%),
+          linear-gradient(135deg, #040913 0%, #07111f 45%, #0e2238 100%);
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+
+      .glow {
+        position: fixed;
+        width: 320px;
+        height: 320px;
+        filter: blur(90px);
+        opacity: 0.25;
+        border-radius: 50%;
+        z-index: 0;
+        animation: pulse 10s infinite alternate;
+      }
+
+      .glow.one { top: 5%; left: 8%; background: #7c5cff; }
+      .glow.two { bottom: 8%; right: 10%; background: #17d8c2; animation-delay: 2s; }
+
+      main {
+        position: relative;
+        z-index: 1;
+        width: min(92vw, 960px);
+        text-align: center;
+        padding: 24px;
+      }
+
+      .badge {
+        display: inline-block;
+        border: 1px solid rgba(255,255,255,0.14);
+        background: rgba(255,255,255,0.08);
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--soft);
+      }
+
+      h1 {
+        margin: 16px auto 8px;
+        font-size: clamp(2rem, 6vw, 4rem);
+        line-height: 1.05;
+      }
+
+      p.subtitle {
+        color: var(--soft);
+        max-width: 640px;
+        margin: 0 auto 30px;
+        font-size: 1.02rem;
+      }
+
+      .quote-box {
+        background: var(--panel);
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+        border-radius: 28px;
+        padding: 28px;
+        min-height: 220px;
+        display: grid;
+        place-items: center;
+        backdrop-filter: blur(8px);
+      }
+
+      .quote-card {
+        max-width: 760px;
+        animation: openQuote 0.7s ease both;
+      }
+
+      .quote-card.closing {
+        animation: closeQuote 0.45s ease both;
+      }
+
+      .quote-text {
+        font-size: clamp(1.35rem, 4vw, 2rem);
+        line-height: 1.35;
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+
+      .quote-author {
+        color: #bce7ff;
+        font-size: 1rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .dots {
+        margin-top: 14px;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.25);
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+
+      .dot.active {
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        transform: scale(1.15);
+      }
+
+      footer {
+        margin-top: 18px;
+        color: #cdd9ee;
+        font-size: 0.95rem;
+        opacity: 0.95;
+      }
+
+      @keyframes pulse {
+        from { transform: scale(1); opacity: 0.2; }
+        to { transform: scale(1.15); opacity: 0.35; }
+      }
+
+      @keyframes openQuote {
+        from { opacity: 0; transform: translateY(18px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      @keyframes closeQuote {
+        from { opacity: 1; transform: translateY(0) scale(1); }
+        to { opacity: 0; transform: translateY(-16px) scale(1.02); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="glow one"></div>
+    <div class="glow two"></div>
+
+    <main>
+      <span class="badge">Goodwall Challenge</span>
+      <h1>Motivational Quotes</h1>
+      <p class="subtitle">A simple, animated website that keeps your mindset strong with one quote at a time.</p>
+
+      <section class="quote-box" aria-live="polite">
+        <article class="quote-card" id="quoteCard">
+          <div class="quote-text" id="quoteText">“Start where you are. Use what you have. Do what you can.”</div>
+          <div class="quote-author" id="quoteAuthor">— Arthur Ashe</div>
+        </article>
+      </section>
+
+      <div class="dots" id="dots" aria-label="Quote navigation"></div>
+      <footer>Fresh motivation every few seconds • Designed to help you Grow with GoodWall</footer>
+    </main>
+
+    <script>
+      const quotes = [
+        { text: 'Start where you are. Use what you have. Do what you can.', author: 'Arthur Ashe' },
+        { text: 'Small steps every day lead to big results over time.', author: 'Unknown' },
+        { text: 'Believe you can and you are halfway there.', author: 'Theodore Roosevelt' },
+        { text: 'Success is the sum of small efforts repeated day in and day out.', author: 'Robert Collier' },
+        { text: 'Your future is created by what you do today, not tomorrow.', author: 'Robert Kiyosaki' },
+        { text: 'Discipline is choosing between what you want most and what you want now.', author: 'Abraham Lincoln' },
+        { text: 'Do not wait for the perfect moment. Take the moment and make it perfect.', author: 'Zoey Sayward' },
+        { text: 'Dream big. Start small. Act now.', author: 'Robin Sharma' },
+        { text: 'The only way to do great work is to love what you do.', author: 'Steve Jobs' },
+        { text: 'Keep going. Everything you need will come to you at the perfect time.', author: 'Unknown' },
+        { text: 'You are stronger than you think and closer than you feel.', author: 'Unknown' },
+        { text: 'Progress, not perfection, is the goal.', author: 'Unknown' },
+        { text: 'Every day is a chance to build the life you want.', author: 'Unknown' },
+        { text: 'Make your mindset so strong that doubt has no place.', author: 'Unknown' },
+        { text: 'Consistency turns dreams into reality.', author: 'Unknown' },
+        { text: 'The harder you work for something, the greater you will feel when you achieve it.', author: 'Unknown' },
+        { text: 'You do not have to be perfect to be powerful.', author: 'Unknown' },
+        { text: 'Rise, reset, and keep moving forward.', author: 'Unknown' },
+        { text: 'Your effort today is your success tomorrow.', author: 'Unknown' },
+        { text: 'Be brave enough to begin and strong enough to finish.', author: 'Unknown' },
+        { text: 'Focus on progress, not pressure.', author: 'Unknown' },
+        { text: 'One good decision can change your whole week.', author: 'Unknown' },
+        { text: 'Courage grows every time you choose growth.', author: 'Unknown' },
+        { text: 'What you do daily compounds into your future.', author: 'Unknown' },
+        { text: 'Let your actions speak louder than your excuses.', author: 'Unknown' },
+        { text: 'You are allowed to start again with more wisdom.', author: 'Unknown' },
+        { text: 'The best time to begin is now.', author: 'Unknown' },
+        { text: 'A positive mindset turns obstacles into lessons.', author: 'Unknown' },
+        { text: 'Show up, stay kind, and keep learning.', author: 'Unknown' },
+        { text: 'Your mindset is your superpower.', author: 'Unknown' },
+        { text: 'Great things come from small, repeated actions.', author: 'Unknown' },
+        { text: 'Every challenge is a chance to become stronger.', author: 'Unknown' },
+        { text: 'The future rewards the one who starts today.', author: 'Unknown' },
+        { text: 'Stay patient. Your breakthrough is on the way.', author: 'Unknown' },
+        { text: 'Confidence grows when you keep showing up.', author: 'Unknown' },
+        { text: 'You can do hard things one step at a time.', author: 'Unknown' },
+        { text: 'Keep your eyes on the goal and your heart on the mission.', author: 'Unknown' },
+        { text: 'Success begins in the mind before it appears in life.', author: 'Unknown' },
+        { text: 'Your story is still being written—make it powerful.', author: 'Unknown' },
+        { text: 'Small wins build the life you dream of.', author: 'Unknown' },
+        { text: 'Choose discipline, and results will follow.', author: 'Unknown' },
+        { text: 'The path to growth begins with one brave step.', author: 'Unknown' },
+        { text: 'Keep going, even when the progress feels slow.', author: 'Unknown' },
+        { text: 'Your effort matters, even on quiet days.', author: 'Unknown' },
+        { text: 'You are becoming stronger with every challenge you face.', author: 'Unknown' },
+        { text: 'There is no limit to what you can create.', author: 'Unknown' },
+        { text: 'The right mindset transforms ordinary days into extraordinary ones.', author: 'Unknown' },
+        { text: 'Take action today and trust the process.', author: 'Unknown' },
+        { text: 'Every step forward is proof of your resilience.', author: 'Unknown' },
+        { text: 'You are capable of more than you think.', author: 'Unknown' },
+        { text: 'Let your ambition be louder than your fear.', author: 'Unknown' },
+        { text: 'A better tomorrow begins with your choices today.', author: 'Unknown' },
+        { text: 'Stay focused, stay kind, and keep moving.', author: 'Unknown' }
+      ];
+
+      const quoteText = document.getElementById('quoteText');
+      const quoteAuthor = document.getElementById('quoteAuthor');
+      const quoteCard = document.getElementById('quoteCard');
+      const dots = document.getElementById('dots');
+      let current = 0;
+      let timer;
+
+      function renderDots() {
+        dots.innerHTML = '';
+        quotes.forEach((_, index) => {
+          const dot = document.createElement('span');
+          dot.className = 'dot' + (index === current ? ' active' : '');
+          dots.appendChild(dot);
+        });
+      }
+
+      function showQuote(index) {
+        current = index;
+        quoteCard.classList.add('closing');
+
+        setTimeout(() => {
+          quoteText.textContent = `“${quotes[index].text}”`;
+          quoteAuthor.textContent = `— ${quotes[index].author}`;
+          quoteCard.classList.remove('closing');
+          renderDots();
+        }, 420);
+      }
+
+      function nextQuote() {
+        showQuote((current + 1) % quotes.length);
+      }
+
+      function startRotation() {
+        clearInterval(timer);
+        timer = setInterval(nextQuote, 4500);
+      }
+
+      renderDots();
+      showQuote(0);
+      startRotation();
+    </script>
+  </body>
+</html>
